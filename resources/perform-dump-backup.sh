@@ -20,7 +20,7 @@ for db in $dblist; do
     $dmp_cmd -h "${DB_HOST}" -u"${DB_USER}" -p"${DB_PASSWORD}" -a -B --replace --skip-add-drop-table --no-data  "$db" > "${BACKUP_DIR}/${db}/${DATE}/structure.sql"
     $dmp_cmd -h "${DB_HOST}" -u"${DB_USER}" -p"${DB_PASSWORD}" -a -B --replace --insert-ignore --no-create-info  "$db" > "${BACKUP_DIR}/${db}/${DATE}/data.sql"
     tar -czf "${BACKUP_DIR}/${db}.tar.gz" "${BACKUP_DIR}/${db}/${DATE}"
-    sha256sum "${BACKUP_DIR}/${db}.tar.gz" > "${BACKUP_DIR}/${db}/${DATE}.tar.gz.sha256"
+    sha256sum "${BACKUP_DIR}/${db}.tar.gz" > "${BACKUP_DIR}/${db}.tar.gz.sha256"
     # shellcheck disable=SC2115
     rm -rf "${BACKUP_DIR}/${db}/${DATE}"
 done
