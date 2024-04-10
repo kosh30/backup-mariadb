@@ -51,82 +51,73 @@ An IAM Users should be created, with API Credentials. An example Policy to attac
 
 ## Example Kubernetes Cronjob
 
-An example of how to schedule this container in Kubernetes as a cronjob is below. This would configure a database backup to run each day at 01:00am. The AWS Secret Access Key, and Target Database Password are stored in secrets.
+An example of how to schedule this container in Kubernetes as a cronjob is below. This would configure a database backup to run hourly. The AWS Secret Access Key, and Target Database Password are stored in secrets.
 
 ```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: AWS_SECRET_ACCESS_KEY
-type: Opaque
-data:
-  aws_secret_access_key: <AWS Secret Access Key>
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: TARGET_DATABASE_PASSWORD
-type: Opaque
-data:
-  database_password: <Your Database Password>
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: NOTIFICATION_WEBHOOK_URL
-type: Opaque
-data:
-  slack_webhook_url: <Your Slack WebHook URL>
----
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: my-database-backup
+  name: database-backup-hourly
+  labels:
+    app.kubernetes.io/name: maria-db-operations
 spec:
-  schedule: "0 01 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      backoffLimit: 3
       template:
         spec:
-          containers:
-          - name: my-database-backup
-            image: gcr.io/maynard-io-public/kubernetes-s3-mysql-backup
-            imagePullPolicy: Always
-            env:
-              - name: AWS_ACCESS_KEY_ID
-                value: "<Your Access Key>"
-              - name: AWS_SECRET_ACCESS_KEY
-                valueFrom:
-                   secretKeyRef:
-                     name: AWS_SECRET_ACCESS_KEY
-                     key: aws_secret_access_key
-              - name: AWS_DEFAULT_REGION
-                value: "<Your S3 Bucket Region>"
-              - name: AWS_BUCKET_NAME
-                value: "<Your S3 Bucket Name>"
-              - name: AWS_BUCKET_BACKUP_PATH
-                value: "<Your S3 Bucket Backup Path>"
-              - name: TARGET_DATABASE_HOST
-                value: "<Your Target Database Host>"
-              - name: TARGET_DATABASE_PORT
-                value: "<Your Target Database Port>"
-              - name: TARGET_DATABASE_NAMES
-                value: "<Your Target Database Name(s)>"
-              - name: TARGET_DATABASE_USER
-                value: "<Your Target Database Username>"
-              - name: TARGET_DATABASE_PASSWORD
-                valueFrom:
-                   secretKeyRef:
-                     name: TARGET_DATABASE_PASSWORD
-                     key: database_password
-              - name: NOTIFY_ENABLED
-                value: "<true/false>"
-              - name: NOTIFY_CHANNEL
-                value: "#chatops"
-              - name: NOTIFICATION_WEBHOOK_URL
-                valueFrom:
-                   secretKeyRef:
-                     name: NOTIFICATION_WEBHOOK_URL
-                     key: slack_webhook_url
           restartPolicy: Never
+          containers:
+            - name: mariabd-dumper
+              image: 'ghcr.io/kosh30/backup-mariadb:1.0.0'
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-cluster-secret
+                      key: DB_USER
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-cluster-secret
+                      key: DB_PASSWORD
+                - name: DB_HOST
+                  valueFrom:
+                    configMapKeyRef:
+                      key: db_address
+                      name: db-cluster-config
+                - name: DB_PORT
+                  valueFrom:
+                    configMapKeyRef:
+                      key: db_port
+                      name: db-cluster-config
+                - name: BUCKET_NAME
+                  valueFrom:
+                    configMapKeyRef:
+                      key: AWS_BACKUP_BUCKET_NAME
+                      name: aws-backup-bucket
+                - name: BACKUP_PREFIX
+                  value: "mariadb"
+                - name: AWS_REGION
+                  valueFrom:
+                    configMapKeyRef:
+                      key: AWS_BACKUP_BUCKET_REGION
+                      name: aws-backup-bucket
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: AWS_ACCESS_KEY_ID
+                      name: aws-backup-user
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: AWS_SECRET_ACCESS_KEY
+                      name: aws-backup-user
+  schedule: "5 * * * *"
+
 ```
