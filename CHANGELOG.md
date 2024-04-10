@@ -5,6 +5,13 @@
 
 > All notable changes to this project will be documented in this file
 
+## [1.0.2](https://github.com/kosh30/backup-mariadb/compare/v1.0.1...v1.0.2) (2024-04-10)
+
+
+### 🐛 Bug Fixes
+
+* update location of sha256 file in dump backup script ([dc13c59](https://github.com/kosh30/backup-mariadb/commit/dc13c5951920b55b50cffa52d31d89c9407620c3))
+
 ## [1.0.1](https://github.com/kosh30/backup-mariadb/compare/v1.0.0...v1.0.1) (2024-04-10)
 
 
