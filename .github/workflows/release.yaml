@@ -54,6 +54,7 @@ jobs:
           path: /tmp/docker.tar
 
   release:
+    permissions: write-all
     environment:
       name: production
       url: https://github.com/${{ github.repository }}/releases/tag/${{ steps.semantic-release.outputs.release-tag }}
@@ -82,7 +83,7 @@ jobs:
         id: semantic-release
         uses: open-sauced/release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_NPM_PUBLISH: true
 
       - name: "♻️ cleanup"
