@@ -1,3 +1,22 @@
+# 📦 kosh30/backup-mariadb changelog
+
+[![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
+
+> All notable changes to this project will be documented in this file
+
+## 1.0.0 (2024-04-10)
+
+
+### 🍕 Features
+
+* initial commit ([5465c27](https://github.com/kosh30/backup-mariadb/commit/5465c270173f9e289ee603d622e0665c281d2653))
+
+
+### 🐛 Bug Fixes
+
+* Update GitHub Actions release workflow ([8999c2b](https://github.com/kosh30/backup-mariadb/commit/8999c2bb7ca0d28b1e6f6bf638af69d630768294))
+
 # 📦 kosh30/k8s-backup-mariadb changelog
 
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
