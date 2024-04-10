@@ -5,6 +5,13 @@
 
 > All notable changes to this project will be documented in this file
 
+## [1.0.1](https://github.com/kosh30/backup-mariadb/compare/v1.0.0...v1.0.1) (2024-04-10)
+
+
+### 🐛 Bug Fixes
+
+* Update Kubernetes Cronjob in README ([6bdd42e](https://github.com/kosh30/backup-mariadb/commit/6bdd42ed1ffe39966d9d2b312af302dcc2c866c8))
+
 ## 1.0.0 (2024-04-10)
 
 
