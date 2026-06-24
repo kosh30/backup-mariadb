@@ -1,5 +1,5 @@
 # Use a smaller base image
-FROM debian:bookworm as build
+FROM debian:bookworm-20260623 as build
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 # Combine RUN commands to minimize layers and clean up in the same layer
